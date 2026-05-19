@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# SSH keys
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.pub
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Gradle
+.gradle/
+build/
