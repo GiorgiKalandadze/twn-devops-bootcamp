@@ -25,3 +25,6 @@ logs/
 # Gradle
 .gradle/
 build/
+
+# App source (referenced externally)
+demo-projects/module-5-demo-1/java-react-example/
