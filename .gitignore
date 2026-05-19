@@ -26,6 +26,13 @@ logs/
 .gradle/
 build/
 
+# Maven local config (contains Nexus credentials)
+settings.xml
+**/settings.xml
+
+# Maven build output
+target/
+
 # App source (referenced externally)
 demo-projects/module-5-demo-1/java-react-example/
 demo-projects/module-6-demo-1/java-app/
