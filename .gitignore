@@ -28,3 +28,5 @@ build/
 
 # App source (referenced externally)
 demo-projects/module-5-demo-1/java-react-example/
+demo-projects/module-6-demo-1/java-app/
+demo-projects/module-6-demo-1/java-maven-app/
