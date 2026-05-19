@@ -294,7 +294,92 @@ You should see the JAR uploaded.
 
 ---
 
-## What I Learned (so far)
+### Step 13 — Clone Maven Project Locally
+
+On your local machine:
+
+```bash
+git clone https://gitlab.com/twn-devops-bootcamp/latest/06-nexus/java-maven-app.git
+cd java-maven-app
+```
+
+---
+
+### Step 14 — Configure `pom.xml` for Nexus Deployment
+
+Open `pom.xml` and add a `<distributionManagement>` block as a direct child of `<project>`:
+
+```xml
+<distributionManagement>
+    <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>http://<DROPLET_IP>:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+
+This tells Maven where to push the artifact when running `mvn deploy` on a SNAPSHOT version. The `<id>` is a label — it must match the `<id>` used in `~/.m2/settings.xml` for credentials.
+
+![pom.xml distributionManagement](./screenshots/14-pom-distribution-management.png)
+
+---
+
+### Step 15 — Configure Maven Credentials in `~/.m2/settings.xml`
+
+Maven's user-level config (`~/.m2/settings.xml`) holds credentials. It lives in your user home, **not** in the project, so it's never committed to Git.
+
+```bash
+mkdir -p ~/.m2
+vim ~/.m2/settings.xml
+```
+
+Add:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <servers>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>developer</username>
+      <password>your-nexus-password</password>
+    </server>
+  </servers>
+</settings>
+```
+
+The `<id>` here must exactly match the `<id>` in `pom.xml`'s `<snapshotRepository>` — that's how Maven links the destination URL (from `pom.xml`) to the credentials for it (from `settings.xml`).
+
+---
+
+### Step 16 — Build and Deploy the Maven Artifact
+
+```bash
+mvn package
+mvn deploy
+```
+
+- `mvn package` — compiles and produces the JAR in `target/`
+- `mvn deploy` — runs `package`, then uploads the JAR to the Nexus URL from `distributionManagement`
+
+Expected output ends with `BUILD SUCCESS` and an upload line like:
+```
+Uploading: http://<DROPLET_IP>:8081/repository/maven-snapshots/com/example/java-maven-app/1.1.0-SNAPSHOT/...
+```
+
+---
+
+### Step 17 — Verify Maven Artifact in Nexus
+
+In the Nexus UI: **Browse → maven-snapshots → com → example → java-maven-app → 1.1.0-SNAPSHOT/**
+
+Both Gradle and Maven artifacts now live side by side in the same `maven-snapshots` repository.
+
+![Nexus Maven artifact](./screenshots/17-nexus-maven-artifact.png)
+
+---
+
+## What I Learned
 
 - How to install and configure Nexus Repository Manager from scratch on a cloud server
 - Why Nexus must run as a dedicated non-root OS user (security + permission management)
@@ -303,5 +388,20 @@ You should see the JAR uploaded.
 - How to create Nexus roles with fine-grained privileges (`nx-repository-view-maven2-maven-snapshots-*`) and assign them to users — principle of least privilege
 - How to configure a Gradle project with the `maven-publish` plugin to push artifacts to a remote repository
 - How to keep Nexus credentials out of project source by storing them in `~/.gradle/gradle.properties`
+- The role of `~/.m2/`: Maven's user-home directory. Contains `repository/` (a local cache of every downloaded JAR, reused across all your Maven projects) and `settings.xml` (your personal Maven config — credentials, mirrors, proxies)
+- The difference between project-level config (`pom.xml`, committed to Git) and user-level config (`~/.m2/settings.xml`, never committed). `pom.xml` declares *where* to publish; `settings.xml` declares *how to authenticate*
+- How the `<id>` field links `pom.xml`'s `distributionManagement` to `settings.xml`'s `servers` — by name match, not URL match
 
-*(Maven publishing section to follow)*
+---
+
+## Cleanup
+
+Nexus runs continuously and consumes resources — destroy the Droplet when done:
+
+```bash
+# stop nexus first
+su - nexus
+/opt/nexus/bin/nexus stop
+```
+
+Then destroy the Droplet in the DigitalOcean dashboard.
