@@ -63,25 +63,11 @@ docker --version
 docker ps
 ```
 
-📸 `01-docker-version.png`
+![Docker version](screenshots/01-docker-version.png)
 
 ---
 
-### Step 2 — Clone the Bootcamp's Example Repo
-
-```bash
-git clone https://gitlab.com/twn-devops-bootcamp/latest/07-docker/js-app.git
-cd js-app
-ls
-```
-
-The repo includes `app/` (Node.js source) and `Dockerfile`.
-
-📸 `02-repo-cloned.png`
-
----
-
-### Step 3 — Pull MongoDB and Mongo Express Images
+### Step 2 — Pull MongoDB and Mongo Express Images
 
 ```bash
 docker pull mongo
@@ -89,11 +75,11 @@ docker pull mongo-express
 docker images
 ```
 
-📸 `03-docker-pull-images.png`
+![Pull images](screenshots/02-docker-pull-images.png)
 
 ---
 
-### Step 4 — Create a Docker Network
+### Step 3 — Create a Docker Network
 
 Containers on a custom bridge network can reach each other by container name (DNS).
 
@@ -102,11 +88,11 @@ docker network create mongo-network
 docker network ls
 ```
 
-📸 `04-create-network.png`
+![Create network](screenshots/03-create-network.png)
 
 ---
 
-### Step 5 — Run MongoDB Container
+### Step 4 — Run MongoDB Container
 
 ```bash
 docker run -d \
@@ -118,11 +104,11 @@ docker run -d \
   mongo
 ```
 
-📸 `05-mongodb-running.png`
+![MongoDB running](screenshots/04-mongodb-running.png)
 
 ---
 
-### Step 6 — Run Mongo Express Container
+### Step 5 — Run Mongo Express Container
 
 Mongo Express defaults to port 8081 inside the container. Ports 8081 and 8082 were in use on my host, so I mapped to **8085**.
 
@@ -139,30 +125,30 @@ docker run -d \
 
 `ME_CONFIG_MONGODB_SERVER=mongodb` is the *container name* — `localhost` inside the container would point to itself, not MongoDB.
 
-📸 `06-mongo-express-running.png`
+![Mongo Express running](screenshots/05-mongo-express-running.png)
 
 ---
 
-### Step 7 — Open Mongo Express in Browser
+### Step 6 — Open Mongo Express in Browser
 
 Open: `http://localhost:8085`
 Login: `admin` / `pass`
 
-📸 `07-mongo-express-ui.png`
+![Mongo Express UI](screenshots/06-mongo-express-ui.png)
 
 ---
 
-### Step 8 — Create the App Database
+### Step 7 — Create the App Database
 
 In Mongo Express:
 1. Create database: `user-account`
 2. Create collection: `users`
 
-📸 `08-create-database.png`
+![Create database](screenshots/07-create-database.png)
 
 ---
 
-### Step 9 — Run the Node.js App on the Host
+### Step 8 — Run the Node.js App on the Host
 
 Run the app directly on the host. It reaches MongoDB through the port mapping (`27017:27017`).
 
@@ -174,19 +160,19 @@ node server.js
 
 Open: `http://localhost:3000` — edit a user profile and save.
 
-📸 `09-app-running-locally.png`
+![App running locally](screenshots/09-app-running-locally.png)
 
 ---
 
-### Step 10 — Verify Data in Mongo Express
+### Step 9 — Verify Data in Mongo Express
 
 Back at `http://localhost:8085`, browse to `user-account` → `users`. The saved document appears.
 
-📸 `10-data-in-mongo-express.png`
+![Data in Mongo Express](screenshots/10-data-in-mongo-express.png)
 
 ---
 
-### Step 11 — Review the Dockerfile
+### Step 10 — Review the Dockerfile
 
 Stop the host app (Ctrl+C). Open `Dockerfile` in the project root:
 
@@ -209,11 +195,11 @@ Key points:
 - `COPY` and `RUN npm install` happen at build time
 - `CMD` is what runs when the container starts
 
-📸 `11-dockerfile.png`
+![Dockerfile](screenshots/11-dockerfile.png)
 
 ---
 
-### Step 12 — Fix the App's Connection URL Before Building
+### Step 11 — Fix the App's Connection URL Before Building
 
 `server.js` defines two connection URLs but both `MongoClient.connect(...)` calls use `mongoUrlLocal`. In a container, `localhost` refers to the container itself — that's why the connection fails. Switch both calls to `mongoUrlDockerCompose` (which points at the `mongodb` container name).
 
@@ -228,7 +214,7 @@ Both lines should now read `MongoClient.connect(mongoUrlDockerCompose, ...)`.
 
 ---
 
-### Step 13 — Build the Node.js Image
+### Step 12 — Build the Node.js Image
 
 From the project root (where the Dockerfile is):
 
@@ -238,11 +224,11 @@ docker build -t my-app:1.0 .
 docker images
 ```
 
-📸 `13-docker-build.png`
+![Docker build](screenshots/12-docker-build.png)
 
 ---
 
-### Step 14 — Run the Node.js App as a Container
+### Step 13 — Run the Node.js App as a Container
 
 ```bash
 docker run -d \
@@ -257,15 +243,15 @@ docker logs my-app
 
 Logs should show: `app listening on port 3000!` with no errors.
 
-📸 `14-app-container-running.png`
+![App container running](screenshots/13-app-container-running.png)
 
 ---
 
-### Step 15 — Verify End-to-End
+### Step 14 — Verify End-to-End
 
 Open: `http://localhost:3000` — the app, now containerized, talks to the MongoDB container via Docker's network DNS. Edit a profile and save, then check Mongo Express at `http://localhost:8085`.
 
-📸 `15-app-end-to-end.png`
+![App end to end](screenshots/15-app-end.png)
 
 ---
 
@@ -302,23 +288,22 @@ docker rmi my-app:1.0 mongo mongo-express
 
 ---
 
-## Screenshots (14 total)
+## Screenshots (13 total)
 
 | # | Filename | Shows |
 |---|---|---|
 | 01 | `01-docker-version.png` | `docker --version` output |
-| 02 | `02-repo-cloned.png` | `ls` showing `app/` and `Dockerfile` |
-| 03 | `03-docker-pull-images.png` | `docker images` with mongo + mongo-express |
-| 04 | `04-create-network.png` | `docker network ls` with `mongo-network` |
-| 05 | `05-mongodb-running.png` | `docker ps` with mongodb |
-| 06 | `06-mongo-express-running.png` | `docker ps` with both DB containers |
-| 07 | `07-mongo-express-ui.png` | Mongo Express homepage at `:8085` |
-| 08 | `08-create-database.png` | `user-account` DB created |
+| 02 | `02-docker-pull-images.png` | `docker images` with mongo + mongo-express |
+| 03 | `03-create-network.png` | `docker network ls` with `mongo-network` |
+| 04 | `04-mongodb-running.png` | `docker ps` with mongodb |
+| 05 | `05-mongo-express-running.png` | `docker ps` with both DB containers |
+| 06 | `06-mongo-express-ui.png` | Mongo Express homepage at `:8085` |
+| 07 | `07-create-database.png` | `user-account` DB created |
 | 09 | `09-app-running-locally.png` | App at `:3000` with user profile |
 | 10 | `10-data-in-mongo-express.png` | Saved document in `users` collection |
 | 11 | `11-dockerfile.png` | Dockerfile contents |
-| 13 | `13-docker-build.png` | `docker build` output + `my-app:1.0` in images |
-| 14 | `14-app-container-running.png` | `docker logs my-app` showing success |
-| 15 | `15-app-end-to-end.png` | Browser: app at `:3000` and Mongo Express at `:8085` |
+| 12 | `12-docker-build.png` | `docker build` output + `my-app:1.0` in images |
+| 13 | `13-app-container-running.png` | `docker logs my-app` showing success |
+| 14 | `15-app-end.png` | Browser: app at `:3000` and Mongo Express at `:8085` |
 
 ---
