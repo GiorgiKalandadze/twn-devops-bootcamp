@@ -248,16 +248,3 @@ DigitalOcean console:
 2. Delete the Cloud Firewall if not reusing it
 
 To keep Nexus around for later modules, skip the volume removal step.
-
----
-
-## Screenshots
-
-| # | Filename | Shows |
-|---|---|---|
-| 01 | `01-docker-installed.png` | Terminal on Droplet: `docker --version` output after install |
-| 02 | `02-nexus-container-running.png` | Terminal: `docker ps` showing nexus container + log line "Started Sonatype Nexus" |
-| 03 | `03-nexus-ui-loaded.png` | Browser: Nexus UI at `http://<DROPLET_IP>:8081` after login |
-| 04 | `04-volume-exists.png` | Terminal: `docker volume ls` and `docker volume inspect nexus-data` output |
-
----
