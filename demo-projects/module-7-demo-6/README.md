@@ -261,14 +261,3 @@ To keep Nexus around for later modules, skip the volume removal step.
 | 04 | `04-volume-exists.png` | Terminal: `docker volume ls` and `docker volume inspect nexus-data` output |
 
 ---
-
-## What to Blur / Not Commit
-
-- Nexus admin password (initial or new) in any screenshot — blur
-- Droplet IP in browser URL bar and SSH prompts — blur
-- Your home IP in the firewall Source column — blur
-- README uses `<DROPLET_IP>` placeholder throughout; no real values committed
-
----
-
-*Estimated time: 30 minutes · Cost: ~$0.20 (4 GB Droplet at $0.036/hr)*
