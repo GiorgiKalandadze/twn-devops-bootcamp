@@ -1,0 +1,9 @@
+{
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "description": "Simple Node.js hello world app for Nexus demo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
