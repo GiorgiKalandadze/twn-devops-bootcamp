@@ -4,7 +4,7 @@
 
 **Technologies:** Jenkins · Docker · Linux · Git · Java · Maven
 
-**Application source:** [java-maven-app](https://gitlab.com/twn-devops-bootcamp/latest/08-jenkins/java-maven-app)
+**Application source:** [java-maven-app](https://gitlab.com/giorgikalandadze24/twn-java-maven-app)
 
 **Part of:** [TWN DevOps Bootcamp](https://github.com/GiorgiKalandadze/twn-devops-bootcamp)
 
@@ -36,7 +36,7 @@ Jenkins (Droplet :8080)
                 │
                 ▼
         DockerHub (private repo)
-        giorgikalandadze/java-maven-app:1.0, :1.1 ...
+        kala24/java-maven-app:1.0, :1.1 ...
 ```
 
 ---
@@ -133,7 +133,7 @@ In the Jenkins UI:
 Configure:
 
 - **Source Code Management → Git**
-  - Repository URL: `https://gitlab.com/twn-devops-bootcamp/latest/08-jenkins/java-maven-app`
+  - Repository URL: `https://gitlab.com/giorgikalandadze24/twn-java-maven-app`
   - Credentials: none (public repo)
 - **Build Steps → Invoke top-level Maven targets**
   - Goals: `test`
@@ -168,7 +168,7 @@ Commit this `Jenkinsfile` to the root of `java-maven-app`:
 pipeline {
     agent any
     tools {
-        maven 'maven'
+        maven 'Maven'
     }
     stages {
         stage('build jar') {
@@ -179,9 +179,9 @@ pipeline {
         stage('build image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-twn-repo', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'docker build -t giorgikalandadze/java-maven-app:1.0 .'
+                    sh 'docker build -t kala24/java-maven-app:1.0 .'
                     sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh 'docker push giorgikalandadze/java-maven-app:1.0'
+                    sh 'docker push kala24/java-maven-app:1.0'
                 }
             }
         }
@@ -197,7 +197,7 @@ Run the Pipeline job. All stages should go green.
 
 ### Step 9 — Verify Image on DockerHub
 
-Open `https://hub.docker.com/r/giorgikalandadze/java-maven-app` and confirm the `1.0` tag is present.
+Open `https://hub.docker.com/r/kala24/java-maven-app` and confirm the `1.0` tag is present.
 
 ![Image on DockerHub](screenshots/05-image-on-dockerhub.png)
 
@@ -226,7 +226,7 @@ Update the `Jenkinsfile` with a deploy stage that only runs on `main`:
 pipeline {
     agent any
     tools {
-        maven 'maven'
+        maven 'Maven'
     }
     stages {
         stage('build jar') {
@@ -237,9 +237,9 @@ pipeline {
         stage('build image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-twn-repo', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'docker build -t giorgikalandadze/java-maven-app:1.0 .'
+                    sh 'docker build -t kala24/java-maven-app:1.0 .'
                     sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh 'docker push giorgikalandadze/java-maven-app:1.0'
+                    sh 'docker push kala24/java-maven-app:1.0'
                 }
             }
         }
@@ -291,25 +291,3 @@ When Module 8 is fully done, stop and remove the container and volume, then dest
 docker stop jenkins && docker rm jenkins
 docker volume rm jenkins_home
 ```
-
----
-
-## Screenshots
-
-| # | Filename | Shows |
-|---|----------|-------|
-| 01 | `01-docker-in-jenkins.png` | `docker --version` output inside the Jenkins container |
-| 02 | `02-jenkins-credentials.png` | Jenkins credentials page with the `docker-hub-twn-repo` entry |
-| 03 | `03-freestyle-build-success.png` | Freestyle job console output showing BUILD SUCCESS |
-| 04 | `04-pipeline-build-success.png` | Pipeline job stage view with all stages green |
-| 05 | `05-image-on-dockerhub.png` | DockerHub repository showing `java-maven-app:1.0` tag |
-| 06 | `06-multibranch-branches.png` | Multibranch Pipeline job listing `main` and `dev` branches |
-| 07 | `07-branch-build-results.png` | Build results for both branches — deploy stage skipped on `dev` |
-
----
-
-## What to Blur
-
-- DockerHub password / access token in any terminal screenshot
-- Droplet IP — use `<DROPLET_IP>` in any command shown on screen
-- Home IP visible in firewall rule screenshots
