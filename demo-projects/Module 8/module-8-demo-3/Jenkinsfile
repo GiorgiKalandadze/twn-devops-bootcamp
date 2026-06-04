@@ -1,0 +1,32 @@
+@Library('jenkins-shared-library') _
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven'
+    }
+    stages {
+        stage('build jar') {
+            steps {
+                script {
+                    buildJar()
+                }
+            }
+        }
+        stage('build image') {
+            steps {
+                script {
+                    buildImage('kala24/java-maven-app:1.0')
+                }
+            }
+        }
+        stage('deploy') {
+            when {
+                expression { BRANCH_NAME == 'main' }
+            }
+            steps {
+                echo 'deploying to production...'
+            }
+        }
+    }
+}
