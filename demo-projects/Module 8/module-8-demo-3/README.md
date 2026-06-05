@@ -259,9 +259,3 @@ Then destroy the Droplet from the DigitalOcean console.
 
 ---
 
-## What to Blur
-
-- DockerHub password / access token in any terminal screenshot
-- GitLab personal access token in any screenshot
-- Droplet IP — use `<DROPLET_IP>` in any command shown on screen
-- Home IP visible in firewall rule screenshots
