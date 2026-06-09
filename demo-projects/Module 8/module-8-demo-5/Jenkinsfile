@@ -1,0 +1,58 @@
+@Library('jenkins-shared-library') _
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven'
+    }
+    stages {
+        stage('increment version') {
+            steps {
+                script {
+                    sh 'mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit'
+                    def version = sh(
+                        script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout',
+                        returnStdout: true
+                    ).trim()
+                    env.IMAGE_TAG = "$version-$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('build jar') {
+            steps {
+                script {
+                    buildJar()
+                }
+            }
+        }
+        stage('build image') {
+            steps {
+                script {
+                    buildImage("kala24/java-maven-app:${IMAGE_TAG}")
+                }
+            }
+        }
+        stage('commit version') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'gitlab-credential', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                        sh "git remote set-url origin https://${USER}:${PASS}@gitlab.com/giorgikalandadze24/twn-java-maven-app.git"
+                        sh 'git add .'
+                        sh 'git commit -m "jenkins: version bump"'
+                        sh 'git push origin HEAD:main'
+                    }
+                }
+            }
+        }
+        stage('deploy') {
+            when {
+                expression { BRANCH_NAME == 'main' }
+            }
+            steps {
+                echo 'deploying to production...'
+            }
+        }
+    }
+}
