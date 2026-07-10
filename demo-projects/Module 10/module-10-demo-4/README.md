@@ -28,8 +28,8 @@ AWS ECR authentication tokens expire after **12 hours**, so the Secret must be r
 ## Architecture
 
 ```
-  AWS ECR — private repo: java-maven-app
-  <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/java-maven-app
+  AWS ECR — private repo: my-app
+  <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/my-app
      │
      │  auth via docker-registry Secret (ecr-registry-key)
      ▼
@@ -93,8 +93,8 @@ kubectl get secret ecr-registry-key --output=yaml
 ```yaml
 spec:
   containers:
-    - name: java-maven-app
-      image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/java-maven-app:<tag>
+    - name: my-app
+      image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/my-app:<tag>
       ports:
         - containerPort: 8080
   imagePullSecrets:
