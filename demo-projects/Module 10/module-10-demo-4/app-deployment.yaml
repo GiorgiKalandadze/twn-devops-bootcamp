@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: 252324673517.dkr.ecr.eu-north-1.amazonaws.com/twn-demo-repo:latest
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: ecr-registry-key
