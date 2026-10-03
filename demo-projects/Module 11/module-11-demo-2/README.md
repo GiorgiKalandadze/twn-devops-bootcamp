@@ -56,6 +56,7 @@ Fargate Profile = selector rule:
 1. **Create the Fargate Pod Execution Role**
    Create an IAM Role with a trust relationship allowing the `eks-fargate-pods.amazonaws.com` service to assume it, and attach the `AmazonEKSFargatePodExecutionRolePolicy`. This is what allows Fargate to run Pods, pull images, and write logs on your behalf.
    📸 `screenshot-01` — Fargate Pod Execution Role created and visible in the IAM Roles list
+   ![Fargate Pod Execution Role created](screenshots/screenshot-01.png)
 
 2. **Create the Fargate Profile**
    On the existing EKS cluster, create a new Fargate Profile:
@@ -65,6 +66,7 @@ Fargate Profile = selector rule:
 
    Only Pods landing in the `dev` namespace with the `profile: dev` label will be scheduled onto Fargate; everything else continues to use the Node Group as before.
    📸 `screenshot-02` — Fargate Profile created and showing status `Active`
+   ![Fargate Profile Active](screenshots/screenshot-02.png)
 
 3. **Deploy an Example Application onto Fargate**
    ```bash
@@ -80,6 +82,7 @@ Fargate Profile = selector rule:
    ```
    A Pod running on Fargate shows a dedicated virtual node named like `fargate-ip-xx-xx-xx-xx.<region>.compute.internal` — distinct from the EC2 instances in the Node Group — confirming it was scheduled on Fargate rather than existing worker capacity.
    📸 `screenshot-03` — Pod `Running` on a Fargate virtual node, with the example app visible in the browser (if exposed via LoadBalancer/port-forward)
+   ![Pod running on Fargate](screenshots/screenshot-03.png)
 
 ## What I Learned
 - The difference between a Fargate Profile and a Node Group: one is a scheduling rule for serverless Pods, the other is a pool of EC2 workers you manage
