@@ -74,6 +74,7 @@ Kubernetes, AWS EKS, AWS EC2, AWS IAM, AWS CloudFormation
 3. **Create the EKS Cluster (Control Plane Nodes)**
    In the AWS Console, create the EKS cluster and attach the Cluster IAM Role and the VPC created above.
    📸 `screenshot-01` — EKS cluster status showing `Active`
+   ![EKS cluster Active](screenshots/screenshot-01.png)
 
 4. **Connect kubectl Locally**
    ```bash
@@ -94,6 +95,7 @@ Kubernetes, AWS EKS, AWS EC2, AWS IAM, AWS CloudFormation
    kubectl get nodes
    ```
    📸 `screenshot-02` — worker nodes showing `Ready`
+   ![Worker nodes Ready](screenshots/screenshot-02.png)
 
 7. **Configure Auto-Scaling (via IRSA)**
    a. Create a custom IAM Policy granting Auto-Scaling permissions (describe/set desired capacity on Auto Scaling Groups)
@@ -113,6 +115,7 @@ Kubernetes, AWS EKS, AWS EC2, AWS IAM, AWS CloudFormation
    kubectl get pods -n kube-system
    ```
    📸 `screenshot-03` — `cluster-autoscaler` Pod Running
+   ![cluster-autoscaler Pod running](screenshots/screenshot-03.png)
 
 9. **Deploy a Sample Application**
    ```bash
