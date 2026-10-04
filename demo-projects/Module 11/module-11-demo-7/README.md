@@ -58,12 +58,13 @@ Created the private repository `java-maven-app` in AWS ECR under the region `eu-
 
 
 📸 **Screenshot 1** — Private AWS ECR repository `java-maven-app` successfully created
+![](screenshots/screenshot-01.png)
 
 
 2. **Configure ECR Credentials in Jenkins**
 Added the required AWS credentials (`ecr-credentials`) alongside existing AWS and GitLab credentials inside the Jenkins Credentials Manager to authorize image builds and deployment actions[cite: 2].
-📸 **Screenshot 2** — `ecr-credentials` configured in Jenkins Credentials Store[cite: 2]
-[cite: 2]
+📸 **Screenshot 2** — `ecr-credentials` configured in Jenkins Credentials Store
+![](screenshots/screenshot-02.png)
 3. **Create the ECR Image Pull Secret on the EKS Cluster**
 Generated an ECR authorization token using the AWS CLI and created a `docker-registry` Secret (`aws-registry-key`) in Kubernetes so EKS node kubelets can pull private images from ECR[cite: 3]:
 ```bash
@@ -82,8 +83,8 @@ kubectl get secret
 ```
 
 
-📸 **Screenshot 3** — `aws-registry-key` Secret created alongside existing registry keys on EKS[cite: 3]
-[cite: 3]
+📸 **Screenshot 3** — `aws-registry-key` Secret created alongside existing registry keys on EKS
+![](screenshots/screenshot-03.png)
 4. **Update Jenkinsfile for ECR Build, Push, and Deployment**
 Configured the pipeline stages in `Jenkinsfile`:
 * Auth to ECR using `aws ecr get-login-password`
@@ -94,8 +95,8 @@ Configured the pipeline stages in `Jenkinsfile`:
 
 5. **Run the Complete CI/CD Pipeline**
 Triggered the Jenkins build to run through versioning, building, image publishing to ECR, deploying to EKS, and committing code changes back to GitLab[cite: 5].
-📸 **Screenshot 4** — Pipeline console output confirming successful completion (`Finished: SUCCESS`) and Git version commit push[cite: 5]
-[cite: 5]
+📸 **Screenshot 4** — Pipeline console output confirming successful completion (`Finished: SUCCESS`) and Git version commit push
+![](screenshots/screenshot-04.png)
 6. **Verify Application Deployment and Pod Image Source on EKS**
 Checked pod deployment status on the cluster[cite: 4]:
 ```bash
@@ -104,8 +105,8 @@ kubectl get pods
 ```
 
 
-📸 **Screenshot 5** — Application Pods in `Running` status on EKS[cite: 4]
-[cite: 4]
+📸 **Screenshot 5** — Application Pods in `Running` status on EKS
+![](screenshots/screenshot-05.png)
 Inspected pod details to confirm image pulling directly from AWS ECR[cite: 6]:
 ```bash
 kubectl describe pod java-maven-app-8f98778c-9zxhn
@@ -113,8 +114,8 @@ kubectl describe pod java-maven-app-8f98778c-9zxhn
 ```
 
 
-📸 **Screenshot 6** — `kubectl describe pod` output confirming image pulled from AWS ECR repository (`[252324673517.dkr.ecr.eu-central-1.amazonaws.com/java-maven-app:1.1.12-15](https://252324673517.dkr.ecr.eu-central-1.amazonaws.com/java-maven-app:1.1.12-15)`)[cite: 6]
-[cite: 6]
+📸 **Screenshot 6** — `kubectl describe pod` output confirming image pulled from AWS ECR repository (`[252324673517.dkr.ecr.eu-central-1.amazonaws.com/java-maven-app:1.1.12-15](https://252324673517.dkr.ecr.eu-central-1.amazonaws.com/java-maven-app:1.1.12-15)`)
+![](screenshots/screenshot-06.png)
 
 ---
 
