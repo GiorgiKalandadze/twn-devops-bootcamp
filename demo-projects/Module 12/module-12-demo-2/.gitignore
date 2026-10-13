@@ -1,0 +1,18 @@
+# Local state files & backups (contains sensitive infrastructure metadata & credentials)
+*.tfstate
+*.tfstate.*
+
+# Variable definition files (contains sensitive inputs like my_ip, keys, passwords)
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform working directory (downloaded providers & modules)
+.terraform/
+
+# Crash logs
+crash.log
+crash.*.log
